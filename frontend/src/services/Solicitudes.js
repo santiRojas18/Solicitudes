@@ -1,5 +1,5 @@
 
-const API_URL = 'http://localhost:8080/api/solicitudes';
+const API_URL = 'http://3.129.18.52:8080/api/solicitudes';
 
 
 export async function listarSolicitudes() {
