@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/historial")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://3.129.18.52:3000")
 public class HistorialController {
 
     private final HistorialRepository historialRepository;

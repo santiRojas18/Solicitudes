@@ -6,7 +6,7 @@ import com.santiago.solicitudes.repository.UsuarioRepository;
 
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://3.129.18.52:3000")
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
