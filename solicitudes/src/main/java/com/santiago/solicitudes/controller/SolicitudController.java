@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.santiago.solicitudes.model.EstadoSolicitud;
 import com.santiago.solicitudes.model.HistorialSolicitud;
@@ -41,8 +43,15 @@ public class SolicitudController {
     }
 
     @GetMapping
-    public List<Solicitud> listar(@RequestParam Long usuarioId) {
-        return service.listar(usuarioId);
+    public List<Solicitud> listar(@RequestParam(required = false) Long usuarioId,
+            @RequestParam String rol) {
+        if ("RESPONSABLE".equalsIgnoreCase(rol)) {
+            return service.listar(usuarioId);
+        } else if ("SOLICITANTE".equalsIgnoreCase(rol) && usuarioId != null) {
+            return service.listarPorSolicitante(usuarioId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parámetros inválidos");
+        }
     }
 
     @GetMapping("/historial")

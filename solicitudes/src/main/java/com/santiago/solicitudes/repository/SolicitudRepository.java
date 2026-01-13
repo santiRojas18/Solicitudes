@@ -13,4 +13,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
 
     List<Solicitud> findAll();
 
+    List<Solicitud> findBySolicitanteId(Long id);
+
 }

@@ -49,6 +49,10 @@ public class SolicitudService {
         }
     }
 
+    public List<Solicitud> listarPorSolicitante(Long idSolicitante) {
+        return repository.findBySolicitanteId(idSolicitante);
+    }
+
     public Solicitud cambiarEstado(Long id, EstadoSolicitud nuevoEstado) {
         Solicitud solicitud = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));

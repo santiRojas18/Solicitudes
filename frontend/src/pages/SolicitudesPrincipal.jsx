@@ -20,7 +20,6 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
     tipo: "Normal",
   });
 
-
   useEffect(() => {
     cargarSolicitudes();
     actualizarHistorial();
@@ -28,11 +27,12 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
 
   async function cargarSolicitudes() {
     const data = await listarSolicitudes();
-    const filtradas = data.filter((s) =>
-      usuarioActual.rol === "RESPONSABLE"
-        ? s.responsable?.id === usuarioActual.id && s.estado === "PENDIENTE"
-        : true
-    );
+    let filtradas;
+    if (usuarioActual.rol === "RESPONSABLE") {
+      filtradas = data.filter((s) => s.estado === "PENDIENTE");
+    } else {
+      filtradas = data.filter((s) => s.solicitante?.id === usuarioActual.id);
+    }
     setSolicitudes(filtradas);
   }
 
@@ -60,18 +60,20 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
     try {
       if (comentarios[s.id]) await agregarComentario(s.id, comentarios[s.id]);
       await cambiarEstado(s.id, nuevoEstado);
-      setSolicitudes((prev) => prev.filter((sol) => sol.id !== s.id));
+      await cargarSolicitudes();
       actualizarHistorial();
     } catch (err) {
       console.error(err);
       alert("Error actualizando solicitud");
     }
   }
+
   async function crearNuevaSolicitud() {
     try {
       const creada = await crearSolicitud({
         ...nuevoFormulario,
         solicitante: usuarioActual,
+        responsable: null,
         estado: "PENDIENTE",
       });
       setSolicitudes((prev) => [...prev, creada]);
@@ -103,88 +105,116 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
         <button onClick={cerrarSesion} style={{ padding: "8px 12px" }}>
           Cerrar sesión
         </button>
-
       </div>
-      <br />
-      <div style={{ display: "flex", flexDirection: "column" }}>
 
-        {usuarioActual.rol === "SOLICITANTE" && (
-          <div style={{ flex: 1 }}>
-            <h1>Mis Solicitudes</h1>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {solicitudes.map((s) => (
-                <li
-                  key={s.id}
-                  style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
-                >
-                  <div>ID: {s.id}</div>
-                  <strong>{s.titulo}</strong>
-                  <div>{s.descripcion}</div>
-                  <div>Tipo: {s.tipo}</div>
-                  <div>Estado: {s.estado}</div>
-                </li>
-              ))}
-            </ul>
+      {usuarioActual.rol === "SOLICITANTE" && (
+        <div style={{ flex: 1 }}>
+          <h1>CREAR SOLICITUD</h1>
+          <button onClick={() => setMostrandoFormulario(true)}>Nueva Solicitud</button>
 
-            <h2>Crear Nueva Solicitud</h2>
-            <button onClick={() => setMostrandoFormulario(true)}>Nueva Solicitud</button>
-            {mostrandoFormulario && (
-              <div style={{ border: "1px solid #ccc", padding: "15px", margin: "10px 0" }}>
-                <input
-                  placeholder="Título"
-                  value={nuevoFormulario.titulo}
-                  onChange={(e) =>
-                    setNuevoFormulario((prev) => ({ ...prev, titulo: e.target.value }))
-                  }
-                  style={{ width: "100%", marginBottom: "8px" }}
-                />
+          {mostrandoFormulario && (
+            <div style={{ border: "1px solid #ccc", padding: "15px", margin: "10px 0" }}>
+              <input
+                placeholder="Título"
+                value={nuevoFormulario.titulo}
+                onChange={(e) =>
+                  setNuevoFormulario((prev) => ({ ...prev, titulo: e.target.value }))
+                }
+                style={{ width: "100%", marginBottom: "8px" }}
+              />
+              <textarea
+                placeholder="Descripción"
+                value={nuevoFormulario.descripcion}
+                onChange={(e) =>
+                  setNuevoFormulario((prev) => ({ ...prev, descripcion: e.target.value }))
+                }
+                style={{ width: "100%", marginBottom: "8px" }}
+              />
+              <button onClick={crearNuevaSolicitud}>Crear</button>
+            </div>
+          )}
+
+          <h2>Mis solicitudes</h2>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {solicitudes.map((s) => (
+              <li
+                key={s.id}
+                style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
+              >
+                <div>ID: {s.id}</div>
+                <strong>{s.titulo}</strong>
+                <div>{s.descripcion}</div>
+                <div>Estado: {s.estado}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+  
+      {usuarioActual.rol === "RESPONSABLE" && (
+        <div style={{ flex: 1 }}>
+          <h1>SOLICITUDES PENDIENTES</h1>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {solicitudes.map((s) => (
+              <li
+                key={s.id}
+                style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
+              >
+                <div>ID: {s.id}</div>
+                <div>Solicitante: {s.solicitante?.nombre}</div>
+                <strong>{s.titulo}</strong>
+                <div>{s.descripcion}</div>
+                <div>Tipo: {s.tipo}</div>
+
+                <div>comentario:</div>
                 <textarea
-                  placeholder="Descripción"
-                  value={nuevoFormulario.descripcion}
-                  onChange={(e) =>
-                    setNuevoFormulario((prev) => ({ ...prev, descripcion: e.target.value }))
-                  }
-                  style={{ width: "100%", marginBottom: "8px" }}
+                  value={comentarios[s.id] || ""}
+                  onChange={(e) => handleChange(e, s.id)}
+                  style={{ width: "100%", height: "60px" }}
                 />
-                <button onClick={crearNuevaSolicitud}>Crear</button>
-              </div>
-            )}
-          </div>
-        )}
+                <div>Estado: {s.estado}</div>
+                <br />
 
-        {usuarioActual.rol === "RESPONSABLE" && (
-          <div style={{ flex: 1 }}>
-            <h1>SOLICITUDES PENDIENTES</h1>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {solicitudes.map((s) => (
-                <li
-                  key={s.id}
-                  style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
-                >
-                  <div>ID: {s.id}</div>
-                  <div>Solicitante: {s.solicitante?.nombre}</div>
-                  <strong>{s.titulo}</strong>
-                  <div>{s.descripcion}</div>
-                  <div>Tipo: {s.tipo}</div>
+                <button onClick={() => actualizarEstado(s, "APROBADO")}>Aprobar</button>
+                <button onClick={() => actualizarEstado(s, "RECHAZADO")}>Rechazar</button>
+              </li>
+            ))}
+          </ul>
 
-                  <div>Comentario:</div>
-                  <textarea
-                    value={comentarios[s.id] || ""}
-                    onChange={(e) => handleChange(e, s.id)}
-                    style={{ width: "100%", height: "60px" }}
-                  />
+          <button onClick={() => setMostrarHistorial(!mostrarHistorial)}>
+            {mostrarHistorial ? "Cerrar Historial" : "Ver Historial"}
+          </button>
 
-                  <div>Estado: {s.estado}</div>
-                  <br />
+          {mostrarHistorial && (
+            <div
+              style={{
+                width: "350px",
+                marginTop: "20px",
+                padding: "15px",
+                borderTop: "2px solid #ccc",
+              }}
+            >
+              <h3>HISTORIAL</h3>
+              <ul>
+                {historial.map((h) => (
+                  <li key={h.solicitud.id}>
+                    <div>ID: {h.solicitud.id}</div>
+                    <strong>{h.solicitud.titulo}</strong> - {h.estadoAnterior} → {h.estadoNuevo}{" "}
+                    <br />
+                    {h.comentario && `Comentario: ${h.comentario}`} <br />
+                    {new Date(h.fechaCambio).toLocaleString()}<br />
+                    {h.responsable && `Responsable: ${h.responsable.nombre}`}
+                    <hr />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
-                  <button onClick={() => actualizarEstado(s, "APROBADO")}>Aprobar</button>
-                  <button onClick={() => actualizarEstado(s, "RECHAZADO")}>Rechazar</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+     
       <div style={{ position: "fixed", top: 20, right: 20, width: 250 }}>
         {notificaciones.map((n) => (
           <div
