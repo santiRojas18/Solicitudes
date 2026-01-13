@@ -2,6 +2,7 @@ package com.santiago.solicitudes.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,12 @@ public class SolicitudService {
 
     public List<Solicitud> listarPorSolicitante(Long idSolicitante) {
         return repository.findBySolicitanteId(idSolicitante);
+    }
+
+    public List<Solicitud> listarTodosPendientes() {
+        return repository.findAll().stream()
+                .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE)
+                .collect(Collectors.toList());
     }
 
     public Solicitud cambiarEstado(Long id, EstadoSolicitud nuevoEstado) {

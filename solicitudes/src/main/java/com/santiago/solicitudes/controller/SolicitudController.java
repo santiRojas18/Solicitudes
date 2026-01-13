@@ -43,14 +43,13 @@ public class SolicitudController {
     }
 
     @GetMapping
-    public List<Solicitud> listar(@RequestParam(required = false) Long usuarioId,
-            @RequestParam String rol) {
-        if ("RESPONSABLE".equalsIgnoreCase(rol)) {
+    public List<Solicitud> listar(@RequestParam(required = false) Long usuarioId) {
+        if (usuarioId != null) {
+
             return service.listar(usuarioId);
-        } else if ("SOLICITANTE".equalsIgnoreCase(rol) && usuarioId != null) {
-            return service.listarPorSolicitante(usuarioId);
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parámetros inválidos");
+
+            return service.listarTodosPendientes();
         }
     }
 
