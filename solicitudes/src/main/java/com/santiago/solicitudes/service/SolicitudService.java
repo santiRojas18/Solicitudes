@@ -27,27 +27,31 @@ public class SolicitudService {
         return historialRepository.findBySolicitudId(solicitudId);
     }
 
-   public Solicitud crear(Solicitud solicitud) {
-    // Traer el solicitante real
-    usuario solicitante = usuarioRepository.findById(solicitud.getSolicitante().getId())
-        .orElseThrow(() -> new RuntimeException("Solicitante no encontrado"));
-    solicitud.setSolicitante(solicitante);
+    public Solicitud crear(Solicitud solicitud) {
+        usuario solicitante = usuarioRepository.findById(solicitud.getSolicitante().getId())
+                .orElseThrow(() -> new RuntimeException("Solicitante no encontrado"));
+        solicitud.setSolicitante(solicitante);
 
-    // Traer el responsable real
-    usuario responsable = usuarioRepository.findById(solicitud.getResponsable().getId())
-        .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
-    solicitud.setResponsable(responsable);
+        usuario responsable = usuarioRepository.findById(solicitud.getResponsable().getId())
+                .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
+        solicitud.setResponsable(null);
 
-    // Fecha y estado
-    if (solicitud.getEstado() == null) solicitud.setEstado(EstadoSolicitud.PENDIENTE);
-    if (solicitud.getFechaCreacion() == null) solicitud.setFechaCreacion(LocalDateTime.now());
+        if (solicitud.getEstado() == null)
+            solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+        if (solicitud.getFechaCreacion() == null)
+            solicitud.setFechaCreacion(LocalDateTime.now());
 
-    return repository.save(solicitud);
-}
+        return repository.save(solicitud);
+    }
 
-
-    public List<Solicitud> listar() {
-        return repository.findAll();
+    public List<Solicitud> listar(Long usuarioId) {
+        usuario usuarioActual = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        if (usuarioActual.getRol().equals("RESPONSABLE")) {
+            return repository.findAll();
+        } else {
+            return repository.findBySolicitante(usuarioActual);
+        }
     }
 
     public Solicitud cambiarEstado(Long id, EstadoSolicitud nuevoEstado) {

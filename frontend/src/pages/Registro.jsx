@@ -31,7 +31,6 @@ export default function Registro() {
     }
   }
 
-
   return (
     <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
       <h2>Registro</h2>

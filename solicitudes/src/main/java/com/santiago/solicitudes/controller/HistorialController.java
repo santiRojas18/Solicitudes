@@ -46,7 +46,6 @@ public class HistorialController {
 
     @PutMapping("/{id}/comentario")
     public HistorialSolicitud agregarComentario(@PathVariable Long id, @RequestBody ComentarioDTO dto) {
-        // Busca la solicitud
         Solicitud solicitud = SolicitudRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 

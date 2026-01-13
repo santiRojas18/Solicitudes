@@ -2,6 +2,8 @@ package com.santiago.solicitudes.controller;
 
 import java.util.List;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.santiago.solicitudes.model.EstadoSolicitud;
 import com.santiago.solicitudes.model.HistorialSolicitud;
 import com.santiago.solicitudes.model.Solicitud;
+import com.santiago.solicitudes.model.usuario;
 import com.santiago.solicitudes.repository.HistorialRepository;
+import com.santiago.solicitudes.repository.UsuarioRepository;
 import com.santiago.solicitudes.service.SolicitudService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,8 +30,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @CrossOrigin(origins = "http://3.129.18.52:3000")
 public class SolicitudController {
 
+    @Autowired
     private final SolicitudService service;
     private final HistorialRepository HistorialRepository;
+    private final UsuarioRepository UsuarioRepository;
 
     @PostMapping
     public Solicitud crear(@RequestBody Solicitud solicitud) {
@@ -35,8 +41,8 @@ public class SolicitudController {
     }
 
     @GetMapping
-    public List<Solicitud> listar() {
-        return service.listar();
+    public List<Solicitud> listar(@RequestParam Long usuarioId) {
+        return service.listar(usuarioId);
     }
 
     @GetMapping("/historial")

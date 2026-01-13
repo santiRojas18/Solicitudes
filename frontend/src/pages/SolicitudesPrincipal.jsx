@@ -106,96 +106,85 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
 
       </div>
       <br />
-      {usuarioActual.rol === "SOLICITANTE" && (
-        <div style={{ flex: 1 }}>
-          <h1>CREAR SOLICITUD</h1>
-          <button onClick={() => setMostrandoFormulario(true)}>Nueva Solicitud</button>
+      <div style={{ display: "flex", flexDirection: "column" }}>
 
-          {mostrandoFormulario && (
-            <div style={{ border: "1px solid #ccc", padding: "15px", margin: "10px 0" }}>
-              <input
-                placeholder="Título"
-                value={nuevoFormulario.titulo}
-                onChange={(e) =>
-                  setNuevoFormulario((prev) => ({ ...prev, titulo: e.target.value }))
-                }
-                style={{ width: "100%", marginBottom: "8px" }}
-              />
-              <textarea
-                placeholder="Descripción"
-                value={nuevoFormulario.descripcion}
-                onChange={(e) =>
-                  setNuevoFormulario((prev) => ({ ...prev, descripcion: e.target.value }))
-                }
-                style={{ width: "100%", marginBottom: "8px" }}
-              />
-              <button onClick={crearNuevaSolicitud}>Crear</button>
-            </div>
-          )}
-        </div>
-      )}
+        {usuarioActual.rol === "SOLICITANTE" && (
+          <div style={{ flex: 1 }}>
+            <h1>Mis Solicitudes</h1>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {solicitudes.map((s) => (
+                <li
+                  key={s.id}
+                  style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
+                >
+                  <div>ID: {s.id}</div>
+                  <strong>{s.titulo}</strong>
+                  <div>{s.descripcion}</div>
+                  <div>Tipo: {s.tipo}</div>
+                  <div>Estado: {s.estado}</div>
+                </li>
+              ))}
+            </ul>
 
-      {usuarioActual.rol === "RESPONSABLE" && (
-        <div style={{ flex: 1 }}>
-          <h1>SOLICITUDES PENDIENTES</h1>
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {solicitudes.map((s) => (
-              <li
-                key={s.id}
-                style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
-              >
-                <div>ID: {s.id}</div>
-                <div>Solicitante: {s.solicitante?.nombre}</div>
-                <strong>{s.titulo}</strong>
-                <div>{s.descripcion}</div>
-                <div>Tipo: {s.tipo} </div>
-
-                <div>comentario:</div>
-                <textarea
-                  value={comentarios[s.id] || ""}
-                  onChange={(e) => handleChange(e, s.id)}
-                  style={{ width: "100%", height: "60px" }}
+            <h2>Crear Nueva Solicitud</h2>
+            <button onClick={() => setMostrandoFormulario(true)}>Nueva Solicitud</button>
+            {mostrandoFormulario && (
+              <div style={{ border: "1px solid #ccc", padding: "15px", margin: "10px 0" }}>
+                <input
+                  placeholder="Título"
+                  value={nuevoFormulario.titulo}
+                  onChange={(e) =>
+                    setNuevoFormulario((prev) => ({ ...prev, titulo: e.target.value }))
+                  }
+                  style={{ width: "100%", marginBottom: "8px" }}
                 />
-                <div>Estado: {s.estado}</div>
-                <br />
+                <textarea
+                  placeholder="Descripción"
+                  value={nuevoFormulario.descripcion}
+                  onChange={(e) =>
+                    setNuevoFormulario((prev) => ({ ...prev, descripcion: e.target.value }))
+                  }
+                  style={{ width: "100%", marginBottom: "8px" }}
+                />
+                <button onClick={crearNuevaSolicitud}>Crear</button>
+              </div>
+            )}
+          </div>
+        )}
 
-                <button onClick={() => actualizarEstado(s, "APROBADO")}>Aprobar</button>
-                <button onClick={() => actualizarEstado(s, "RECHAZADO")}>Rechazar</button>
-              </li>
-            ))}
-          </ul>
+        {usuarioActual.rol === "RESPONSABLE" && (
+          <div style={{ flex: 1 }}>
+            <h1>SOLICITUDES PENDIENTES</h1>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {solicitudes.map((s) => (
+                <li
+                  key={s.id}
+                  style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
+                >
+                  <div>ID: {s.id}</div>
+                  <div>Solicitante: {s.solicitante?.nombre}</div>
+                  <strong>{s.titulo}</strong>
+                  <div>{s.descripcion}</div>
+                  <div>Tipo: {s.tipo}</div>
 
-          <button onClick={() => setMostrarHistorial(!mostrarHistorial)}>
-            {mostrarHistorial ? "Cerrar Historial" : "Ver Historial"}
-          </button>
+                  <div>Comentario:</div>
+                  <textarea
+                    value={comentarios[s.id] || ""}
+                    onChange={(e) => handleChange(e, s.id)}
+                    style={{ width: "100%", height: "60px" }}
+                  />
 
-          {mostrarHistorial && (
-            <div
-              style={{
-                width: "350px",
-                marginTop: "20px",
-                padding: "15px",
-                borderTop: "2px solid #ccc",
-              }}
-            >
-              <h3>HISTORIAL</h3>
-              <ul>
-                {historial.map((h) => (
-                  <li key={h.solicitud.id}>
-                    <div>ID: {h.solicitud.id}</div>
-                    <strong>{h.solicitud.titulo}</strong> - {h.estadoAnterior} →{" "}
-                    {h.estadoNuevo} <br />
-                    {h.comentario && `Comentario: ${h.comentario}`} <br />
-                    {new Date(h.fechaCambio).toLocaleString()}<br />
-                    {h.responsable && `Responsable: ${h.responsable.nombre}`}
-                    <hr />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+                  <div>Estado: {s.estado}</div>
+                  <br />
+
+                  <button onClick={() => actualizarEstado(s, "APROBADO")}>Aprobar</button>
+                  <button onClick={() => actualizarEstado(s, "RECHAZADO")}>Rechazar</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
       <div style={{ position: "fixed", top: 20, right: 20, width: 250 }}>
         {notificaciones.map((n) => (
           <div
