@@ -45,10 +45,8 @@ public class SolicitudController {
     @GetMapping
     public List<Solicitud> listar(@RequestParam(required = false) Long usuarioId) {
         if (usuarioId != null) {
-
             return service.listar(usuarioId);
         } else {
-
             return service.listarTodosPendientes();
         }
     }
