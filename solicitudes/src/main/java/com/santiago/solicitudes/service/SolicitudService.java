@@ -31,16 +31,11 @@ public class SolicitudService {
         usuario solicitante = usuarioRepository.findById(solicitud.getSolicitante().getId())
                 .orElseThrow(() -> new RuntimeException("Solicitante no encontrado"));
         solicitud.setSolicitante(solicitante);
-
-        usuario responsable = usuarioRepository.findById(solicitud.getResponsable().getId())
-                .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
         solicitud.setResponsable(null);
-
         if (solicitud.getEstado() == null)
             solicitud.setEstado(EstadoSolicitud.PENDIENTE);
         if (solicitud.getFechaCreacion() == null)
             solicitud.setFechaCreacion(LocalDateTime.now());
-
         return repository.save(solicitud);
     }
 
