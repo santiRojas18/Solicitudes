@@ -9,25 +9,26 @@ export default function Login({ onLogin }) {
 
   async function handleLogin() {
     try {
-      const res = await fetch("${API_BASE_URL}/api/usuarios/login", {
+      const res = await fetch(`${API_BASE_URL}/api/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error en login");
+        const text = await res.text();
+        throw new Error(text || "Error en login");
       }
 
       const usuario = await res.json();
-      onLogin(usuario);          
-      navigate("/solicitudes");  
+      onLogin(usuario);
+      navigate("/solicitudes");
     } catch (err) {
       console.error(err);
       alert("Email o contraseña incorrectos");
     }
   }
+
 
   return (
     <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>

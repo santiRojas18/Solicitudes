@@ -11,25 +11,26 @@ export default function Registro() {
 
   async function handleRegistro() {
     try {
-      const res = await fetch("${API_BASE_URL}/api/usuarios/registro", {
+      const res = await fetch(`${API_BASE_URL}/api/usuarios/registro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, email, password, rol })
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Error registrando usuario");
+        const text = await res.text();
+        throw new Error(text || "Error registrando usuario");
       }
 
       const usuarioCreado = await res.json();
       alert("Usuario registrado correctamente: " + usuarioCreado.nombre);
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert("Error: " + err.message);
     }
   }
+
 
   return (
     <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>

@@ -9,7 +9,7 @@ export async function listarSolicitudes() {
 }
 
 export async function crearSolicitud(data) {
-  const response = await fetch("${import.meta.env.VITE_API_URL}/api/solicitudes", {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/solicitudes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
