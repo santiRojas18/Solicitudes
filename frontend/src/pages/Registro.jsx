@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 export default function Registro() {
   const [nombre, setNombre] = useState("");
@@ -10,7 +11,7 @@ export default function Registro() {
 
   async function handleRegistro() {
     try {
-      const res = await fetch("http://localhost:8080/api/usuarios/registro", {
+      const res = await fetch("${API_BASE_URL}/api/usuarios/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, email, password, rol })

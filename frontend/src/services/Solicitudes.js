@@ -9,7 +9,7 @@ export async function listarSolicitudes() {
 }
 
 export async function crearSolicitud(data) {
-  const response = await fetch("http://localhost:8080/api/solicitudes", {
+  const response = await fetch("${import.meta.env.VITE_API_URL}/api/solicitudes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -28,7 +28,8 @@ export async function crearSolicitud(data) {
 
 
 export async function obtenerHistorialGlobal() {
-    const res = await fetch("http://localhost:8080/api/historial");
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/registro`)
+;
     return res.json();
 }
 
@@ -46,7 +47,8 @@ export async function cambiarEstado(id, estado) {
 }
 
 export async function agregarComentario(id, comentario) {
-    const response = await fetch(`http://localhost:8080/api/historial/${id}/comentario`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}
+/api/historial/${id}/comentario`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ comentario }),

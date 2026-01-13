@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -8,7 +9,7 @@ export default function Login({ onLogin }) {
 
   async function handleLogin() {
     try {
-      const res = await fetch("http://localhost:8080/api/usuarios/login", {
+      const res = await fetch("${API_BASE_URL}/api/usuarios/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
