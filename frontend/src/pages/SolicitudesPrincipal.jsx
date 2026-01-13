@@ -21,9 +21,11 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
   });
 
   useEffect(() => {
-    cargarSolicitudes();
-    actualizarHistorial();
-  }, []);
+    if (usuarioActual) {
+      cargarSolicitudes();
+      actualizarHistorial();
+    }
+  }, [usuarioActual]);
 
   async function cargarSolicitudes() {
     const data = await listarSolicitudes();
@@ -100,11 +102,18 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
   }
 
   return (
+
+
     <div style={{ display: "flex", padding: "20px" }}>
-      <div style={{ position: "fixed", top: 10, left: 10 }}>
+      <div style={{ position: "fixed", top: 10, right: 10 }}>
         <button onClick={cerrarSesion} style={{ padding: "8px 12px" }}>
           Cerrar sesión
         </button>
+      </div>
+
+
+      <div style={{ width: "100%", backgroundColor: "#1976d2", color: "white", padding: "15px 20px", boxSizing: "border-box" }}>
+        <h1>Solicitudes</h1>
       </div>
 
       {usuarioActual.rol === "SOLICITANTE" && (
@@ -151,15 +160,21 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
         </div>
       )}
 
-  
+
       {usuarioActual.rol === "RESPONSABLE" && (
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
           <h1>SOLICITUDES PENDIENTES</h1>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {solicitudes.map((s) => (
               <li
                 key={s.id}
-                style={{ border: "1px solid #ddd", marginBottom: "10px", padding: "10px" }}
+                style={{
+                  border: "1px solid #ddd",
+                  marginBottom: "10px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+                }}
               >
                 <div>ID: {s.id}</div>
                 <div>Solicitante: {s.solicitante?.nombre}</div>
@@ -189,32 +204,48 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
           {mostrarHistorial && (
             <div
               style={{
-                width: "350px",
                 marginTop: "20px",
                 padding: "15px",
                 borderTop: "2px solid #ccc",
               }}
             >
               <h3>HISTORIAL</h3>
-              <ul>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                  gap: "15px",
+                  marginTop: "10px",
+                }}
+              >
                 {historial.map((h) => (
-                  <li key={h.solicitud.id}>
+                  <div
+                    key={h.solicitud.id}
+                    style={{
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      padding: "15px",
+                      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                      backgroundColor: "#fff",
+                    }}
+                  >
                     <div>ID: {h.solicitud.id}</div>
-                    <strong>{h.solicitud.titulo}</strong> - {h.estadoAnterior} → {h.estadoNuevo}{" "}
-                    <br />
-                    {h.comentario && `Comentario: ${h.comentario}`} <br />
-                    {new Date(h.fechaCambio).toLocaleString()}<br />
-                    {h.responsable && `Responsable: ${h.responsable.nombre}`}
-                    <hr />
-                  </li>
+                    <strong>{h.solicitud.titulo}</strong>
+                    <div>Estado: {h.estadoNuevo}</div>
+                    {h.comentario && <div>Comentario: {h.comentario}</div>}
+                    <div>{new Date(h.fechaCambio).toLocaleString()}</div>
+                    {h.responsable && <div>Responsable: {h.responsable.nombre}</div>}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
+
         </div>
       )}
 
-     
+
       <div style={{ position: "fixed", top: 20, right: 20, width: 250 }}>
         {notificaciones.map((n) => (
           <div

@@ -32,18 +32,67 @@ export default function Registro() {
   }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-      <h2>Registro</h2>
-      <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} style={{ display: "block", width: "100%", marginBottom: "10px" }} />
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", marginBottom: "10px" }} />
-      <input placeholder="Contraseña" type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", marginBottom: "10px" }} />
-      <select value={rol} onChange={e => setRol(e.target.value)} style={{ display: "block", width: "100%", marginBottom: "10px" }}>
-        <option value="SOLICITANTE">Solicitante</option>
-        <option value="RESPONSABLE">Responsable</option>
-      </select>
-      <button onClick={handleRegistro} style={{ width: "100%" }}>
-        Registrarse
-      </button>
+    <div>
+
+      <div
+        style={{
+          width: "100%",
+          backgroundColor: "#1976d2",
+          color: "white",
+          padding: "20px 0",
+          textAlign: "center",
+          boxSizing: "border-box",
+          marginBottom: "30px",
+        }}
+      >
+        <h1>Registro</h1>
+      </div>
+
+      <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
+        <input
+          placeholder="Nombre"
+          value={nombre}
+          onChange={e => setNombre(e.target.value)}
+          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <input
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <input
+          placeholder="Contraseña"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <select
+          value={rol}
+          onChange={e => setRol(e.target.value)}
+          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+        >
+          <option value="SOLICITANTE">Solicitante</option>
+          <option value="RESPONSABLE">Responsable</option>
+        </select>
+
+        <button
+          onClick={handleRegistro}
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#1976d2",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Registrarse
+        </button>
+      </div>
     </div>
   );
+
 }

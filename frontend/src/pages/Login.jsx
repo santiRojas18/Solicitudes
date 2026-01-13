@@ -31,32 +31,69 @@ export default function Login({ onLogin }) {
 
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-      <h2>Login</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        style={{ display: "block", width: "100%", marginBottom: "10px" }}
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        style={{ display: "block", width: "100%", marginBottom: "10px" }}
-      />
-      <button onClick={handleLogin} style={{ width: "100%" }}>
-        Iniciar sesión
-      </button>
-
-      <button
-        onClick={() => navigate("/registro")}
-        style={{ width: "100%", backgroundColor: "#ddd", marginTop: "5px" }}
+    <div>
+    
+      <div
+        style={{
+          width: "100%",
+          backgroundColor: "#1976d2",
+          color: "white",
+          padding: "20px 0",
+          textAlign: "center",
+          boxSizing: "border-box",
+          marginBottom: "30px",
+        }}
       >
-        Registrarse
-      </button>
+        <h1>Iniciar Sesión</h1>
+      </div>
+
+  
+      <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+        />
+        <button
+          onClick={handleLogin}
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#1976d2",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginBottom: "10px",
+          }}
+        >
+          Iniciar sesión
+        </button>
+
+        <button
+          onClick={() => navigate("/registro")}
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#ddd",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Registrarse
+        </button>
+      </div>
     </div>
   );
+
 }
