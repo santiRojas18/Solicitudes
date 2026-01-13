@@ -72,7 +72,6 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
       const creada = await crearSolicitud({
         ...nuevoFormulario,
         solicitante: usuarioActual,
-        responsable: { id: 2 },
         estado: "PENDIENTE",
       });
       setSolicitudes((prev) => [...prev, creada]);
