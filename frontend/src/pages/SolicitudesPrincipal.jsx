@@ -182,7 +182,7 @@ export default function SolicitudesPrincipal({ usuarioActual, setUsuarioActual }
               <h3>HISTORIAL</h3>
               <ul>
                 {historial.map((h) => (
-                  <li key={h.id}>
+                  <li key={h.solicitud.id}>
                     <strong>{h.solicitud.titulo}</strong> - {h.estadoAnterior} →{" "}
                     {h.estadoNuevo} <br />
                     {h.comentario && `Comentario: ${h.comentario}`} <br />
