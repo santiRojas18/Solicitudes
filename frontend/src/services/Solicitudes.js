@@ -28,7 +28,7 @@ export async function crearSolicitud(data) {
 
 
 export async function obtenerHistorialGlobal() {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/registro`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/historial`);
 ;
     return res.json();
 }
